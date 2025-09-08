@@ -1,8 +1,26 @@
-#root {
-  max-width: 1280px;
+/* Leaflet map container full screen */
+.leaflet-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+}
+
+/* Optional: floating filter card tweaks (if you want to override Tailwind) */
+.map-filter {
+  /* Only if you want custom shadows, borders, etc. */
+  /* Otherwise Tailwind classes handle this */
+}
+
+/* Optional: messages over map */
+.map-message {
+  /* Again, Tailwind px/py/bg-white/rounded shadow classes handle this */
+}
+
+
+/* #root {
 }
 
 .logo {
@@ -42,10 +60,23 @@
 }
 
 
-
-/* App.css */
 .leaflet-container {
-  height: 500px; /* or 100vh for full screen */
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   margin: 0 auto;
 }
+
+.map-filter {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin: 2rem;
+} 
+*/
