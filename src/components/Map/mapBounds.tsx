@@ -30,7 +30,7 @@ const MapBoundsTracker: React.FC<MapBoundsTrackerProps> = ({ onBoundsChange }) =
       minLat: bounds.getSouth(),
       maxLat: bounds.getNorth(),
       minLng: bounds.getWest(),
-      maxLng: bounds.getEast()
+      maxLng: bounds.getEast() 
     }
 
     const prev = prevBoundsRef.current;
