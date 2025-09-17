@@ -10,7 +10,7 @@ import type { MapBounds } from "./mapBounds";
 import type { Occurrence } from "../../types/GBIF";
 
 export default function SpeciesMap() {
-  const [scientificName, setScientificName] = useState("Apteryx haastii");
+  const [scientificName, setScientificName] = useState("");
   const [bounds, setBounds] = useState<MapBounds>();
 
   // Fetch taxonKey for the selected species
@@ -18,11 +18,13 @@ export default function SpeciesMap() {
     useTaxonKey(scientificName);
 
   // Fetch occurrences filtered by taxonKey and map bounds
-  const { data: occurrences = [], isLoading: isOccurrenceLoading, isError: isOccurrenceError } =
+  const { data: occurrences, isLoading: isOccurrenceLoading, isError: isOccurrenceError } =
     useTaxonOccurrence(taxonKey ?? undefined, bounds);
 
   const isLoading = isTaxonKeyLoading || isOccurrenceLoading;
   const isError = isTaxonKeyError || isOccurrenceError;
+
+  console.log(occurrences);
 
   return (
     <div className="relative h-screen w-screen">
@@ -38,6 +40,7 @@ export default function SpeciesMap() {
 
         {/* Occurrence markers */}
         {taxonKey &&
+        occurrences &&
           occurrences.map(
             (occ: Occurrence) =>
               occ.decimalLatitude &&
@@ -64,7 +67,7 @@ export default function SpeciesMap() {
       {!isLoading && taxonKey === null && (
         <FloatingMessage>No species found for "{scientificName}"</FloatingMessage>
       )}
-      {!isLoading && taxonKey && occurrences.length === 0 && (
+      {!isLoading && taxonKey && occurrences && occurrences.length === 0 && (
         <FloatingMessage>No occurrences found for "{scientificName}"</FloatingMessage>
       )}
     </div>

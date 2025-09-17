@@ -9,7 +9,7 @@ type SpeciesPopupProps = {
 const SpeciesPopup: React.FC<SpeciesPopupProps> = ({ occurrence }) => {
   return (
     <div style={{ minWidth: '200px' }}>
-      <h3>{occurrence.species}</h3>
+      <h1 className='font-bold text-base'>{occurrence.species}</h1>
       {occurrence.country && <p><strong>Country:</strong> {occurrence.country}</p>}
       {occurrence.eventDate && (
         <p>

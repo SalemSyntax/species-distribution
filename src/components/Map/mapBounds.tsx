@@ -1,6 +1,6 @@
 // src/components/Map/MapBoundsTracker.tsx
-import { useMapEvent } from "react-leaflet";
-import React from "react";
+import { useMapEvent, useMap } from "react-leaflet";
+import React, { useEffect, useRef } from "react";
 
 export interface MapBounds {
   minLat: number;
@@ -14,15 +14,44 @@ interface MapBoundsTrackerProps {
 }
 
 const MapBoundsTracker: React.FC<MapBoundsTrackerProps> = ({ onBoundsChange }) => {
-  useMapEvent("moveend", (map) => {
-    const b = map.target.getBounds();
-    onBoundsChange({
-      minLat: b.getSouth(),
-      maxLat: b.getNorth(),
-      minLng: b.getWest(),
-      maxLng: b.getEast(),
-    });
+
+  const map = useMap();
+
+  const prevBoundsRef = useRef<MapBounds | null>(null);
+
+  useEffect(() => {
+    console.log("Previous map bounds: ",prevBoundsRef);
   });
+
+  const updateBounds = () => {
+    const bounds = map.getBounds();
+
+    const newBounds: MapBounds = {
+      minLat: bounds.getSouth(),
+      maxLat: bounds.getNorth(),
+      minLng: bounds.getWest(),
+      maxLng: bounds.getEast()
+    }
+
+    const prev = prevBoundsRef.current;
+
+    if (
+      !prev ||
+      newBounds.minLat < prev.minLat ||
+      newBounds.maxLat > prev.maxLat ||
+      newBounds.minLng < prev.minLng ||
+      newBounds.maxLng > prev.maxLng
+    ) {
+      prevBoundsRef.current = newBounds;
+      onBoundsChange(newBounds);
+    }
+  };
+
+  useEffect(() => {
+    updateBounds();
+  },[map]);
+
+  useMapEvent("moveend", updateBounds);
 
   return null;
 };
