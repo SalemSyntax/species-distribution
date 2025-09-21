@@ -23,7 +23,7 @@ export const fetchTaxonOccurrence = async (
     params.maxLongitude = bounds.maxLng;
   }
 
-  const res = await api.get<GBIFOccurrenceResponse>("/occurrence/search", { params });
+  const res = await api.get<GBIFOccurrenceResponse>("/v1/occurrence/search", { params });
 
   return (
     res.data.results.map((occ: any) => ({

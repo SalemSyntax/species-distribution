@@ -19,10 +19,6 @@ const MapBoundsTracker: React.FC<MapBoundsTrackerProps> = ({ onBoundsChange }) =
 
   const prevBoundsRef = useRef<MapBounds | null>(null);
 
-  useEffect(() => {
-    console.log("Previous map bounds: ",prevBoundsRef);
-  });
-
   const updateBounds = () => {
     const bounds = map.getBounds();
 

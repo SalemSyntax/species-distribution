@@ -1,34 +1,38 @@
 import React, { useState, useRef } from "react";
-import { useTaxonSuggestions } from "../../hooks/useTaxonSuggestions";
+import { useTaxonSuggestions} from "../../hooks/useTaxonSuggestions";
+import { useDebounce } from "../../hooks/useDebounce";
+import { getUniqueByCanonicalName } from "../../utils/speciesUtils";
 
-type SpeciesFilterProps = {
+interface SpeciesFilterProps {
   defaultSpecies?: string;
   onChange: (scientificName: string) => void;
   isLoading?: boolean;
-};
+}
 
 const SpeciesFilter: React.FC<SpeciesFilterProps> = ({
   defaultSpecies = "",
   onChange,
-  isLoading = false,
+  isLoading = false
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(defaultSpecies);
   const inputRef = useRef<HTMLInputElement>(null);
+  const debouncedValue = useDebounce(inputValue, 500);
 
-  // fetch suggestions as user types
-  const { data: suggestions = [] } = useTaxonSuggestions(inputValue);
+  const { data: suggestions = [] } = useTaxonSuggestions(debouncedValue);
+
+  const uniqueResults =   getUniqueByCanonicalName(suggestions);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoading && inputValue.trim()) {
-      onChange(inputValue.trim());
+    if (!isLoading && debouncedValue.trim()) {
+      onChange(debouncedValue.trim());
       inputRef.current?.blur();
     }
   };
 
   return (
-    <div className="relative w-80">
+    <div className="relative w-100">
       <form
         onSubmit={handleSubmit}
         className="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-md"
@@ -39,7 +43,7 @@ const SpeciesFilter: React.FC<SpeciesFilterProps> = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)} // optional: see note below
+          onBlur={() => setIsFocused(false)}
           placeholder="Enter scientific name"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg text-black"
         />
@@ -79,18 +83,18 @@ const SpeciesFilter: React.FC<SpeciesFilterProps> = ({
       </form>
 
       {/* Dropdown suggestions */}
-      {isFocused && suggestions.length > 0 && (
+      {isFocused && uniqueResults.length > 0 && (
         <ul className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-md mt-1 max-h-60 overflow-auto">
-          {suggestions.map((s: any) => (
+          {uniqueResults.map((s: any) => (
             <li
               key={s.key}
               onMouseDown={() => {
-                setInputValue(s.scientificName);
-                onChange(s.scientificName);
+                setInputValue(s.canonicalName);
+                onChange(s.canonicalName);
               }}
               className="px-3 py-2 cursor-pointer hover:bg-gray-100 text-black"
             >
-              {s.scientificName}
+              {s.canonicalName}
             </li>
           ))}
         </ul>

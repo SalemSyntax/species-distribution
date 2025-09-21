@@ -6,6 +6,6 @@ export const useTaxonSuggestions = (query: string) => {
   return useQuery({
     queryKey: ["taxonSuggestions", query],
     queryFn: () => fetchTaxonSuggestions(query),
-    enabled: query.length > 1, // only fetch if user typed >1 char
+    enabled: query.length > 1, 
   });
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://api.gbif.org/v1",
+  baseURL: "https://api.gbif.org",
   headers: {
     "Content-Type": "application/json",
   },

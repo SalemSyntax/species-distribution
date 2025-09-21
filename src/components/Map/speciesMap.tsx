@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useState } from "react";
 import { useTaxonOccurrence } from "../../hooks/useTaxonOccurrence";
-import { useTaxonKey } from "../../hooks/useTaxonKey";
+import { useSpeciesData } from "../../hooks/useSpeciesData";
 import SpeciesPopup from "../Popup/speciesPopup";
 import SidePanel from "../SidePanel/sidePanel";
 import FloatingMessage from "../Messages/FloatingMessage";
@@ -14,17 +14,15 @@ export default function SpeciesMap() {
   const [bounds, setBounds] = useState<MapBounds>();
 
   // Fetch taxonKey for the selected species
-  const { data: taxonKey, isLoading: isTaxonKeyLoading, isError: isTaxonKeyError } =
-    useTaxonKey(scientificName);
+  const { data: speciesData, isLoading: isTaxonKeyLoading, isError: isTaxonKeyError } = useSpeciesData(scientificName);
+
+  const taxonKey = speciesData?.usage.key;
 
   // Fetch occurrences filtered by taxonKey and map bounds
-  const { data: occurrences, isLoading: isOccurrenceLoading, isError: isOccurrenceError } =
-    useTaxonOccurrence(taxonKey ?? undefined, bounds);
+  const { data: occurrences, isLoading: isOccurrenceLoading, isError: isOccurrenceError } = useTaxonOccurrence(taxonKey ?? undefined, bounds);
 
   const isLoading = isTaxonKeyLoading || isOccurrenceLoading;
   const isError = isTaxonKeyError || isOccurrenceError;
-
-  console.log(occurrences);
 
   return (
     <div className="relative h-screen w-screen">
@@ -59,6 +57,7 @@ export default function SpeciesMap() {
         scientificName={scientificName}
         setScientificName={setScientificName}
         isLoading={isLoading}
+        speciesData={speciesData}
       />
 
       {/* Floating messages */}
